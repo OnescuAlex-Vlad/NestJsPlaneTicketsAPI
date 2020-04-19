@@ -1,23 +1,49 @@
-import { Injectable } from "@nestjs/common";
-import { Category } from "./categories.model";
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { CreateCategoryDTO } from "./dto/create-category.dto";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Category } from "./categories.entity";
+import { CategoryRepository } from "./categories.repository";
 
 @Injectable()
 export class CategoriesService {
-  private categories: Category[] = [];
+  constructor(
+    @InjectRepository(CategoryRepository)
+    private categoryRepository: CategoryRepository,
+  ) { }
 
-  getAllCategories(): Category[] {
-    return this.categories;
+  async getCategories(categoryDto: CreateCategoryDTO): Promise<Category[]> {
+    return await this.categoryRepository.find(categoryDto);
   }
 
-  // createCategory(roSlug: string, ruSlug: string, enSlug: string): Category {
-  //   const category: Category = {
-  //     id: uuid(),
-  //     roSlug,
-  //     ruSlug,
-  //     enSlug,
-  //   };
+  async getCategoryById(id: string): Promise<Category> {
+    const found = await this.categoryRepository.findOne(id);
 
-  //   this.categories.push(category);
-  //   return category;
-  // }
+    if (!found) {
+      throw new NotFoundException(`Category with ID "${id}" not found`);
+    }
+
+    return found;
+  }
+
+  async createCategory(categoryDto: CreateCategoryDTO): Promise<Category> {
+    return this.categoryRepository.createCategory(categoryDto);
+  }
+
+  async updateCategory(id: string, roSlug: string, ruSlug: string, enSlug: string): Promise<Category> {
+    const category = await this.getCategoryById(id);
+    category.roSlug = roSlug;
+    category.ruSlug = ruSlug;
+    category.enSlug = enSlug;
+
+    await category.save();
+    return category;
+  }
+
+  async deleteCategory(id: number): Promise<void> {
+    const result = await this.categoryRepository.delete(id);
+
+    if (result.affected === 0) {
+      throw new NotFoundException(`Category with ID "${id}" not found`);
+    }
+  }
 }

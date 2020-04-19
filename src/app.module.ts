@@ -8,12 +8,21 @@ import { CategoriesModule } from "./categories/categories.module";
 import { UsersModule } from "./users/users.module";
 import { OffersModule } from "./offers/offers.module";
 import { CitiesModule } from "./cities/cities.module";
-import { AuthModule } from './auth/auth.module';
+import { AuthModule } from "./auth/auth.module";
 
 @Module({
-  imports: [MulterModule.register({
-    dest: "./files",
-  }), TypeOrmModule.forRoot(), CountriesModule, CategoriesModule, UsersModule, OffersModule, CitiesModule, AuthModule],
+  imports: [
+    TypeOrmModule.forRoot(),
+    CountriesModule,
+    CategoriesModule,
+    UsersModule,
+    OffersModule,
+    CitiesModule,
+    AuthModule,
+    MulterModule.register({
+      dest: "./uploads",
+    }),
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

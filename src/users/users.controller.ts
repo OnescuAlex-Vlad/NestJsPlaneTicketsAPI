@@ -1,18 +1,20 @@
-import { Controller, Get, Post, Body, Param, Delete, Put, UsePipes, ValidationPipe, ParseIntPipe, Query } from "@nestjs/common";
+import { Controller, Get, Post, Body, Param, Delete, Put, UsePipes, ValidationPipe, ParseIntPipe, Query, UseGuards } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { CreateUserDTO } from "./dto/create-user.dto";
 import { User } from "./users.entity";
 import { UserPermissions } from "./users-permissions.enum";
 import { GetUsersFilterDto } from "./dto/get-users-filter.dto";
+import { AuthGuard } from "@nestjs/passport";
 
 @Controller("users")
+@UseGuards(AuthGuard())
 export class UsersController {
   constructor(private usersService: UsersService) { }
 
-  // @Get()
-  // getAllUsers(@Query("page") page: number, @Query("limit") rowsPerPage: number) {
-  //   return this.usersService.getAllUsers(page, rowsPerPage);
-  // }
+  @Get()
+  getAllUsers(@Query("page") page: number, @Query("limit") rowsPerPage: number) {
+    return this.usersService.getAllUsers(page, rowsPerPage);
+  }
 
   @Get()
   getUsers(@Query(ValidationPipe) filterDto: GetUsersFilterDto): Promise<User[]> {

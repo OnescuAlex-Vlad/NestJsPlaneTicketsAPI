@@ -13,13 +13,13 @@ export class UsersService {
     private userRepository: UserRepository,
   ) { }
 
-  // async getAllUsers(page: number = 1, rowsPerPage: number) {
-  //   const [selectedItems, totalNumberOfItems] = await this.userRepository.findAndCount({
-  //     take: rowsPerPage,
-  //     skip: rowsPerPage * (page - 1),
-  //   });
-  //   return { selectedItems, totalNumberOfItems };
-  // }
+  async getAllUsers(page: number = 1, rowsPerPage: number) {
+    const [selectedItems, totalNumberOfItems] = await this.userRepository.findAndCount({
+      take: rowsPerPage,
+      skip: rowsPerPage * (page - 1),
+    });
+    return { selectedItems, totalNumberOfItems };
+  }
 
   async getUsers(filterDto: GetUsersFilterDto): Promise<User[]> {
     return this.userRepository.getUsers(filterDto);
