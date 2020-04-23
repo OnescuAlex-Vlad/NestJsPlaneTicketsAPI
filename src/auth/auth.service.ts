@@ -13,6 +13,10 @@ export class AuthService {
     private jwtService: JwtService,
   ) { }
 
+  async getSystemUser(username: AuthCredentialsDto["username"]) {
+    return this.systemUserRepository.findOne(username);
+  }
+
   async signUp(authCredentialsDto: AuthCredentialsDto): Promise<void> {
     return this.systemUserRepository.signUp(authCredentialsDto);
   }
